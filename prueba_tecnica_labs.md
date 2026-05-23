@@ -14,7 +14,7 @@ El foco de esta prueba no es la complejidad funcional, sino evaluar buenas prác
 - Node.js con **Express**
 
 ### Frontend (elegir una opción)
-- **Vue**
+- **React**
 - Manejador de estado a elección del candidato
 
 ### Base de datos
@@ -22,7 +22,8 @@ El foco de esta prueba no es la complejidad funcional, sino evaluar buenas prác
 - La BD debe estar dockerizada
 
 ### Sockets
-- **Socket.IO**
+- **Socket.IO** recomendado
+- Se acepta `ws` nativo u otra librería equivalente si se justifica
 
 ---
 
