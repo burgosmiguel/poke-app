@@ -1,6 +1,6 @@
 # PokeApp
 
-Full-stack application to browse and manage favourite Pokémon, built with **Node.js/Express**, **Vue 3**, **PostgreSQL**, and **Socket.IO**.
+Full-stack application to browse and manage favourite Pokémon, built with **Node.js/Express**, **React 18**, **PostgreSQL**, and **Socket.IO**.
 
 ---
 
@@ -9,12 +9,12 @@ Full-stack application to browse and manage favourite Pokémon, built with **Nod
 | Concern | Choice | Reason |
 |---|---|---|
 | Backend framework | Express | Required by spec |
-| Frontend framework | Vue 3 (Composition API) | Required by spec |
-| State management | Pinia | Official Vue 3 recommendation, simpler than Vuex |
+| Frontend framework | React 18 | Component-based UI, large ecosystem |
+| State management | Zustand | Lightweight, works outside React components (needed for socket handlers) |
 | Real-time | Socket.IO | Required by spec |
-| Database | PostgreSQL 15 | Required by spec |
-| HTTP client | Axios | Mature, interceptor support for username header |
-| Frontend build | Vite | Fast DX, first-class Vue support |
+| Database | PostgreSQL 16 | Required by spec |
+| HTTP client | Axios | Mature, interceptor support for `X-Username` / `X-Socket-Id` headers |
+| Frontend build | Vite + @vitejs/plugin-react | Fast DX, first-class React/JSX support |
 | Frontend serve | Nginx | Lightweight static server for production image |
 
 ---
@@ -37,7 +37,7 @@ cd poke-app
 cp .env.example .env
 
 # 3. Start everything
-docker-compose up
+docker-compose up --build
 ```
 
 Wait for the `backend` service to print `[Server] Running on port 3000` before using the app.
@@ -64,6 +64,8 @@ Open the app at **http://localhost:8080**.
 4. In the first tab, click any Pokémon card and press **"Add to Favorites"** (or click the ★ icon directly on the card).
 5. **The second tab** will instantly show a toast notification like *"Ash added bulbasaur to favorites!"* — without any page refresh.
 6. Any note update or removal also propagates in real time.
+
+> Each browser tab gets a unique socket ID (`socket.id`). The frontend sends this ID as the `X-Socket-Id` header; the backend echoes it back in every socket event as `initiatorId`. Tabs skip events where `initiatorId === socket.id` (they already updated optimistically), while all other tabs apply the update immediately.
 
 > Socket events emitted: `favorite:added`, `favorite:removed`, `favorite:updated`
 
@@ -100,6 +102,17 @@ All requests must include the header `X-Username: <name>` (defaults to `"trainer
 
 ---
 
+## Running tests
+
+```bash
+cd backend
+npm test
+```
+
+10 unit tests covering the favorites service layer (add, list, update note, remove — including error cases like missing fields, duplicate entries, and not-found).
+
+---
+
 ## Development (without Docker)
 
 ```bash
@@ -112,7 +125,7 @@ npm run dev               # nodemon on :3000
 # Frontend
 cd frontend
 npm install
-npm run dev               # Vite dev server on :5173 (proxies /api → :3000)
+npm run dev               # Vite dev server on :5173 (proxies /api and /socket.io → :3000)
 ```
 
 You also need a local PostgreSQL instance matching the credentials in `.env`.
