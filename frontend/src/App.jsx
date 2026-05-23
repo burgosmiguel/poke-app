@@ -11,10 +11,21 @@ export default function App() {
   );
   const itemCount = useFavoritesStore((s) => s.items.length);
 
-  function handleUsernameBlur(e) {
-    const name = e.target.value.trim() || 'trainer';
+  function applyUsername(value) {
+    const name = value.trim() || 'trainer';
     setUsername(name);
-    localStorage.setItem('username', name);
+    if (name !== localStorage.getItem('username')) {
+      localStorage.setItem('username', name);
+      useFavoritesStore.getState().fetchFavorites();
+    }
+  }
+
+  function handleUsernameBlur(e) {
+    applyUsername(e.target.value);
+  }
+
+  function handleUsernameKeyDown(e) {
+    if (e.key === 'Enter') e.target.blur();
   }
 
   return (
@@ -39,6 +50,7 @@ export default function App() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               onBlur={handleUsernameBlur}
+              onKeyDown={handleUsernameKeyDown}
               placeholder="Trainer name"
               className="username-input"
               title="Your trainer name"
