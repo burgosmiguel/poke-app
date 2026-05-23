@@ -113,6 +113,15 @@ npm test
 
 ---
 
+## AI tools used
+
+This project was developed with the assistance of:
+
+- **[Claude Code](https://claude.ai/code)** — agentic coding assistant by Anthropic, used for architecture decisions, code generation, and debugging.
+- **[GitHub Copilot](https://github.com/features/copilot)** — AI pair programmer, used for inline completions and boilerplate acceleration.
+
+---
+
 ## Development (without Docker)
 
 ```bash
